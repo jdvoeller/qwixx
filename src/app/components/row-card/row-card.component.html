@@ -1,0 +1,6 @@
+<div class="main-container" [ngStyle]="{'background-color':colorData.backgroundColor}">
+	<div *ngFor="let data of colorData.scoreBoxData">
+		<card-score-box [data]="data" [color]="colorData.boxColor"
+			(boxUpdated)="boxUpdated($event)"></card-score-box>
+	</div>
+</div>

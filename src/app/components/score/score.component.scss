@@ -1,0 +1,14 @@
+.score-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+
+	.score {
+		margin-top: 12px;
+		background-color: white;
+		padding: 4px 12px;
+		border: solid 1px black;
+		border-radius: 6px;
+		font-size: 28px;
+	}
+}

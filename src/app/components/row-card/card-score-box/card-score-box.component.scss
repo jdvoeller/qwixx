@@ -1,0 +1,15 @@
+.box-container {
+	border-radius: 4px;
+	height: 52px;
+    width: 52px;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+	margin: 6px;
+}
+
+.selected:after {
+	content: "\2713";
+	opacity: 50%;
+	font-size: 38px;
+}

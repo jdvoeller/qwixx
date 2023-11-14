@@ -1,0 +1,10 @@
+<div class="main-card">
+	<div class="header">QWIXX</div>
+	<div class="score-row-container">
+		<div class="row" *ngFor="let color of rowColorKeys">
+			<row-card [color]="color" (updateGameState)="updateGameState($event)"></row-card>
+		</div>
+	</div>
+	<point-chart></point-chart>
+	<score [score]="score"></score>
+</div>

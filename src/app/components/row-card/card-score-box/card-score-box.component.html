@@ -1,0 +1,5 @@
+<div class="box-container" [ngStyle]="{'background-color':color}"
+	(click)="toggleState()"
+	[ngClass]="buttonSelected ? 'selected' : 'unselected' ">
+	{{data === 'lock' ? '&#128274;' : data}}
+</div>
