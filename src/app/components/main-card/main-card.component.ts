@@ -15,6 +15,7 @@ export class MainCardComponent {
 	}
 
 	public updateGameState(data: BoxUpdateDataEx) {
-		console.log(this.gameStateService.updateState(data));
+		this.gameStateService.updateState(data);
+		this.score = this.gameStateService.STATE.totalScore;
 	}
 }
