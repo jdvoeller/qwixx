@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-interface MinusData {
+export interface MinusData {
 	boxNum: number,
 	selected: boolean,
 }
@@ -11,6 +11,7 @@ interface MinusData {
 })
 
 export class MinusBoxesComponent implements OnInit {
+	@Output() boxClickedEvent: EventEmitter<MinusData[]> = new EventEmitter();
 	public boxes: MinusData[];
 	constructor() {
 		this.boxes = [
@@ -31,6 +32,12 @@ export class MinusBoxesComponent implements OnInit {
 				selected: false,
 			},
 		]
+	}
+
+	boxClicked(boxNum: number) {
+		const BOX = this.boxes.filter((b) => b.boxNum === boxNum)[0];
+		BOX.selected = !BOX.selected;
+		this.boxClickedEvent.emit(this.boxes);
 	}
 
 	ngOnInit() { }

@@ -1,4 +1,4 @@
 <div class="score-container">
-	<div class="score">{{score}}</div>
-	<minus-boxes></minus-boxes>
+	<div class="score">{{score + minusPoints}}</div>
+	<minus-boxes (boxClickedEvent)="minuBoxClicked($event)"></minus-boxes>
 </div>
