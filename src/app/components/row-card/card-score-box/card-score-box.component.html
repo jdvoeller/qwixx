@@ -1,5 +1,5 @@
-<div class="box-container" [ngStyle]="{'background-color':color}"
+<div class="box-container" [ngStyle]="data.disabled ? {'background-color':'grey'} : {'background-color':color}"
 	(click)="toggleState()"
 	[ngClass]="buttonSelected ? 'selected' : 'unselected' ">
-	{{data === 'lock' ? '&#128274;' : data}}
+	{{data.boxName === 'lock' ? '&#128274;' : data.boxName}}
 </div>

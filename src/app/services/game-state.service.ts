@@ -1,24 +1,35 @@
 import { Injectable } from '@angular/core';
-import { BoxUpdateDataEx } from '../components/row-card/row-card.component';
 
 export interface GameState {
 	totalScore: number,
 	rowsData: RowData[],
 }
 
-interface RowData {
+export interface RowData {
 	color: string,
 	boxes: BoxData[],
 	rowScore: number,
+	rowColorData: RowColorData,
+	lockable: boolean,
 }
 
-interface BoxData {
-	boxName: number | string,
-	selected: boolean;
+export interface BoxData {
+	boxName: (number | 'lock'),
+	selected: boolean,
+	disabled: boolean,
 }
 
-export const TOP_SCORES: (number | string)[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'lock'];
-export const BOTTOM_SCORES: (number | string)[] = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 'lock'];
+export interface UpdatedBoxData extends BoxData{
+	colorKey: string,
+}
+
+export interface RowColorData {
+	backgroundColor: string,
+	boxColor: string,
+}
+
+export const TOP_SCORES: (number | 'lock')[] = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 'lock'];
+export const BOTTOM_SCORES: (number | 'lock')[] = [12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 'lock'];
 
 @Injectable({providedIn: 'root'})
 export class GameStateService {
@@ -30,25 +41,42 @@ export class GameStateService {
 				{
 					color: 'red',
 					boxes: [],
-					rowScore: 0
+					rowScore: 0,
+					rowColorData: {
+						backgroundColor: '#f03c3c',
+						boxColor: '#f5bcbc',
+					},
+					lockable: false,
 				},
 				{
 					color: 'yellow',
 					boxes: [],
-					rowScore: 0
-	
+					rowScore: 0,
+					rowColorData: {
+						backgroundColor: '#f5e320',
+						boxColor: '#f5f0b8',
+					},
+					lockable: false,	
 				},
 				{
 					color: 'green',
 					boxes: [],
-					rowScore: 0
-	
+					rowScore: 0,
+					rowColorData: {
+						backgroundColor: '#0b4d0b',
+						boxColor: '#91b891',
+					},
+					lockable: false,
 				},
 				{
 					color: 'blue',
 					boxes: [],
-					rowScore: 0
-	
+					rowScore: 0,
+					rowColorData: {
+						backgroundColor: '#1111a6',
+						boxColor: '#a1a1f0',
+					},
+					lockable: false,	
 				},
 			],
 		}
@@ -64,6 +92,7 @@ export class GameStateService {
 					updatedRow.boxes.push({
 						boxName: val,
 						selected: false,
+						disabled: false,
 					});
 				});
 			} else {
@@ -71,18 +100,41 @@ export class GameStateService {
 					updatedRow.boxes.push({
 						boxName: val,
 						selected: false,
+						disabled: false,
+
 					});
 				});
 			}
 			return updatedRow;
 		});
+
+		this.setDisabledState();
 	}
 
-	updateState(data: BoxUpdateDataEx): GameState {
+	setDisabledState() {
+		this.STATE.rowsData.forEach((row) => {
+			let mostRightNumberIndex = 0;
+			row.boxes.forEach((box, i) => {
+				if (box.selected) {
+					mostRightNumberIndex = i;
+				}
+			});
+
+			row.boxes.forEach((box, i) => {
+				if (i < mostRightNumberIndex) {
+					row.boxes[i].disabled = true;
+				} else {
+					row.boxes[i].disabled = false;
+				}
+			})
+		});
+	}
+
+	updateState(data: UpdatedBoxData): GameState {
 		this.STATE.rowsData.forEach((row) => {
 			if (row.color === data.colorKey) {
 				row.boxes.forEach((box) => {
-					if (box.boxName === data.number) {
+					if (box.boxName === data.boxName) {
 						box.selected = data.selected;
 					}
 				})
@@ -94,7 +146,7 @@ export class GameStateService {
 		})
 
 		this.STATE.totalScore = this.totalScore;
-		console.log('state', this.STATE);
+		this.setDisabledState();
 		return this.STATE;
 	}
 

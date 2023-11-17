@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { GameStateService } from 'src/app/services/game-state.service';
-import { BoxUpdateDataEx } from '../row-card/row-card.component';
+import { GameState, GameStateService, UpdatedBoxData } from 'src/app/services/game-state.service';
 
 @Component({
 	selector: 'main-card',
@@ -9,13 +8,18 @@ import { BoxUpdateDataEx } from '../row-card/row-card.component';
 
 })
 export class MainCardComponent {
-	public rowColorKeys: string[] = [ 'red', 'yellow', 'green', 'blue' ];
 	public score: number = 0;
+	public state: GameState;
 	constructor(private gameStateService: GameStateService) {
+		this.state = this.gameStateService.STATE;
 	}
 
-	public updateGameState(data: BoxUpdateDataEx) {
+	public updateGameState(data: UpdatedBoxData) {
 		this.gameStateService.updateState(data);
 		this.score = this.gameStateService.STATE.totalScore;
+		this.state = {...this.gameStateService.STATE};
+		this.state.rowsData.map((row) => {
+			return {...row}
+		})
 	}
 }

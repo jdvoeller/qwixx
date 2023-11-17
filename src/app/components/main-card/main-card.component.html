@@ -1,8 +1,8 @@
 <div class="main-card">
 	<div class="header">QWIXX</div>
 	<div class="score-row-container">
-		<div class="row" *ngFor="let color of rowColorKeys">
-			<row-card [color]="color" (updateGameState)="updateGameState($event)"></row-card>
+		<div class="row" *ngFor="let rowData of state.rowsData">
+			<row-card [rowData]="rowData" (updateGameState)="updateGameState($event)"></row-card>
 		</div>
 	</div>
 	<point-chart></point-chart>
