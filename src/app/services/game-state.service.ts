@@ -33,8 +33,48 @@ export const BOTTOM_SCORES: (number | 'lock')[] = [12, 11, 10, 9, 8, 7, 6, 5, 4,
 
 @Injectable({providedIn: 'root'})
 export class GameStateService {
-	public STATE: GameState;
+	public STATE!: GameState;
 	constructor() {
+		this.setGameStartState();
+		this.populateNewGame();
+	}
+
+	public updateState(data: UpdatedBoxData): GameState {
+
+		// Update row select state
+		this.STATE.rowsData.forEach((row) => {
+			if (row.color === data.colorKey) {
+				row.boxes.forEach((box) => {
+					if (box.boxName === data.boxName) {
+						box.selected = data.selected;
+					}
+				})
+			}
+		});
+
+		// Get row total score
+		this.STATE.rowsData.forEach((row) => {
+			row.rowScore = this.getRowScore(row.color);
+		})
+
+		// Set total score
+		this.STATE.totalScore = this.totalScore;
+
+		// See if row is lockable
+		this.STATE.rowsData.forEach((row) => {
+			if (row.boxes.filter((row) => row.selected).length >= 5) {
+				row.lockable = true;
+			} else {
+				row.lockable = false;
+			}
+		})
+
+		// Disable rows
+		this.setDisabledState();
+		return this.STATE;
+	}
+
+	private setGameStartState() {
 		this.STATE = {
 			totalScore: 0,
 			rowsData: [
@@ -80,11 +120,9 @@ export class GameStateService {
 				},
 			],
 		}
-
-		this.populateNewGame();
 	}
 	
-	populateNewGame() {
+	private populateNewGame() {
 		this.STATE.rowsData.map((row) => {
 			let updatedRow = {...row};
 			if (row.color === 'red' || row.color === 'yellow') {
@@ -111,7 +149,7 @@ export class GameStateService {
 		this.setDisabledState();
 	}
 
-	setDisabledState() {
+	private setDisabledState() {
 		this.STATE.rowsData.forEach((row) => {
 			let mostRightNumberIndex = 0;
 			row.boxes.forEach((box, i) => {
@@ -126,31 +164,20 @@ export class GameStateService {
 				} else {
 					row.boxes[i].disabled = false;
 				}
+
+				if (!row.lockable) {
+					row.boxes[row.boxes.length - 1].disabled = true;
+					row.boxes[row.boxes.length - 2].disabled = true;
+				} else {
+					row.boxes[row.boxes.length - 1].disabled = false;
+					row.boxes[row.boxes.length - 2].disabled = false;
+				}
+
 			})
 		});
 	}
 
-	updateState(data: UpdatedBoxData): GameState {
-		this.STATE.rowsData.forEach((row) => {
-			if (row.color === data.colorKey) {
-				row.boxes.forEach((box) => {
-					if (box.boxName === data.boxName) {
-						box.selected = data.selected;
-					}
-				})
-			}
-		});
-
-		this.STATE.rowsData.forEach((row) => {
-			row.rowScore = this.getRowScore(row.color);
-		})
-
-		this.STATE.totalScore = this.totalScore;
-		this.setDisabledState();
-		return this.STATE;
-	}
-
-	get totalScore(): number {
+	private get totalScore(): number {
 		let total = 0;
 		this.STATE.rowsData.forEach((row) => {
 			total += row.rowScore;
@@ -158,11 +185,7 @@ export class GameStateService {
 		return total;
 	}
 
-	cleanGame() {
-		this.populateNewGame();
-	}
-
-	getRowScore(rowColor: string): number {
+	private getRowScore(rowColor: string): number {
 		let row = this.STATE.rowsData.filter((r) => r.color === rowColor)[0];
 		let boxesSelected = 0;
 		row.boxes.forEach((box) => {
