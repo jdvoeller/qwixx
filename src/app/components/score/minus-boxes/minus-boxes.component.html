@@ -1,2 +1,2 @@
 SKIP:
-<div *ngFor="let box of boxes" class="box" (click)="boxClicked(box.boxNum)">{{ box.selected ? 'X' : ''}}</div>
+<div *ngFor="let box of boxes; let i = index" class="minus-box" [attr.data-test]="i" (click)="boxClicked(box.boxNum)">{{ box.selected ? 'X' : ''}}</div>

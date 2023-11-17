@@ -37,7 +37,11 @@
 // }
 declare namespace Cypress {
 	interface Chainable {
-		boxByColorAndIndex(color: string, i: number): Chainable<any>
+		boxByColorAndIndex(color: string, i: number): Chainable,
+		byDataType(name: string): Chainable,
+		minusBoxByIndex(index: number): Chainable,
 	}
 }
 Cypress.Commands.add('boxByColorAndIndex', (color, i) => cy.get(`card-score-box.${color}[data-test="${i}"]`));
+Cypress.Commands.add('byDataType', (name) => cy.get(`[data-test="${name}"]`));
+Cypress.Commands.add('minusBoxByIndex', (i) => cy.get(`.minus-box[data-test="${i}"]`));
